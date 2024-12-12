@@ -1,0 +1,49 @@
+[global_tags]
+  environment = "{{ environment }}"
+
+[agent]
+  interval = "{{ interval }}"
+  round_interval = true
+  metric_batch_size = 1000
+  metric_buffer_limit = 10000
+  collection_jitter = "0s"
+  flush_interval = "{{ flush_interval }}"
+  flush_jitter = "0s"
+  precision = ""
+  debug = {{ debug }}
+
+[[inputs.cpu]]
+  percpu = true
+  totalcpu = true
+  collect_cpu_time = false
+  report_active = true
+
+[[inputs.mem]]
+
+[[inputs.disk]]
+  mount_points = ["/"]
+  ignore_fs = ["tmpfs", "devtmpfs"]
+
+# Bestehender exec Input für CPU-Temperatur
+[[inputs.exec]]
+  commands = ["cat /sys/class/thermal/thermal_zone0/temp"]
+  name_override = "cpu_temperature"
+  timeout = "5s"
+  data_format = "value"
+  data_type = "float"
+
+# Neuer exec Input für den BME680 Sensor
+[[inputs.exec]]
+  commands = ["/usr/bin/python3", "/usr/local/bin/read_bme680.py"]
+  timeout = "5s"
+  data_format = "json"
+  name_override = "bme680"
+
+[[processors.execd]]
+  command = ["/usr/bin/python3", "/usr/local/bin/gpio_filter.py"]
+
+[[outputs.influxdb_v2]]
+  urls = ["{{ influx_url }}"]
+  token = "{{ influx_token }}"
+  organization = "{{ influx_organization }}"
+  bucket = "{{ influx_bucket }}"
