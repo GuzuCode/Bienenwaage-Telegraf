@@ -1,0 +1,55 @@
+# Bienenwaage-Telegraf
+
+Ein Projekt zur Erfassung von Sensordaten mit einem Raspberry Pi und Telegraf. Die Daten werden an eine InfluxDB weitergeleitet.
+
+## Voraussetzungen
+- Raspberry Pi mit installiertem Betriebssystem (z. B. Raspberry Pi OS)
+- Internetzugang
+- Installierte Software: Python3, Telegraf, Git
+
+## Installation
+
+1. Repository klonen:  
+   `git clone https://github.com/GuzuCode/Bienenwaage-Telegraf.git`  
+   `cd Bienenwaage-Telegraf`
+
+2. Konfiguration anpassen:  
+   - Navigiere in den Ordner `config`:  
+     `cd config`  
+   - Bearbeite die Datei `settings.env` und füge deine individuellen Einstellungen hinzu:  
+     ```
+     environment=raspberrypi
+     interval=10s
+     flush_interval=10s
+     debug=true
+
+     influx_url=https://example.influxdb.url
+     influx_token=YOUR_INFLUX_TOKEN_HERE
+     influx_organization=YOUR_ORG_NAME
+     influx_bucket=YOUR_BUCKET_NAME
+     ```
+
+3. Installationsskript ausführen:  
+   - Zurück ins Hauptverzeichnis wechseln:  
+     `cd ..`  
+   - Das Installationsskript ausführen:  
+     `sudo ./install.sh`
+
+## Nutzung
+- Nach der Installation läuft Telegraf automatisch und sammelt Sensordaten.
+- Die Konfiguration wird aus `/opt/bienenwaage/config/settings.env` generiert.
+- Logs können unter `/var/log/telegraf/` eingesehen werden.
+
+## Anpassungen
+- Möchtest du neue Sensoren hinzufügen? Passe das Template `config/telegraf.conf.j2` an.
+- Vergiss nicht, Telegraf nach Änderungen neu zu starten:  
+  `sudo systemctl restart telegraf`
+
+## Fehlerbehebung
+- Logs überprüfen:  
+  `sudo journalctl -u telegraf`
+- Debugging-Skripte befinden sich im Ordner `troubleshooting/`.
+
+---
+
+Viel Erfolg mit deinem Projekt! 🚀
